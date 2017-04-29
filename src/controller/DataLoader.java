@@ -1,3 +1,8 @@
+package controller;
+
+import model.Candle;
+import model.Request;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -6,10 +11,11 @@ import java.net.Socket;
 import java.rmi.UnknownHostException;
 import java.util.ArrayList;
 
+
 /**
  * Created by apple on 29.04.17.
  */
-public class Connection {
+public class DataLoader {
 
     private static final String TRYING_CONNECT = "Trying to connect ";
     private static final String CONNECTED = "Connected!";
@@ -21,7 +27,7 @@ public class Connection {
 
     private ArrayList<String> receivedData = new ArrayList<String>(100);
 
-    public Connection(Request request) {
+    public DataLoader(Request request) {
         try {
             String host = request.getHost();
             System.out.println(TRYING_CONNECT + host);
@@ -46,40 +52,40 @@ public class Connection {
         }
     }
 
-    private ArrayList<String> receive(BufferedReader in){
+    private ArrayList<String> receive(BufferedReader in) {
         ArrayList<String> data = new ArrayList<String>();
         String str;
 
-        try{
+        try {
             System.out.println(RECEIVE_DATA);
 
-            do{
+            do {
                 str = in.readLine();
-            }while (!str.isEmpty());
+            } while (!str.isEmpty());
 
             str = in.readLine();
-            int length = Integer.parseInt(str,16);
-            System.out.println("Data length:  hex - " + str+"  dec - "+length);
+            int length = Integer.parseInt(str, 16);
+            System.out.println("Data length -  hex: " + str + "  dec: " + length + " bytes");
 
-            do{
+            do {
                 str = in.readLine();
-                if(!str.isEmpty()) data.add(str);
-            }while (!str.isEmpty());
+                if (!str.isEmpty()) data.add(str);
+            } while (!str.isEmpty());
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.toString());
         }
 
         return data;
     }
 
-    public String[] getData(){
+    public String[] getData() {
         return receivedData.toArray(new String[receivedData.size()]);
     }
 
-    public Candle[] getCandles(){
+    public Candle[] getCandles() {
         ArrayList<Candle> candlesArray = new ArrayList<Candle>(100);
-        for(String s:receivedData){
+        for (String s : receivedData) {
             candlesArray.add(new Candle(s));
         }
 

@@ -1,3 +1,8 @@
+package model;
+
+import model.Board;
+import model.Ticker;
+
 /**
  * Created by apple on 29.04.17.
  * В запросе обязаны присутствовать параметры ticker и period, а также хотя бы один
@@ -77,18 +82,4 @@ public class Request {
     public String getHost() {
         return host;
     }
-}
-
-enum Board {
-    MICEX,
-    FORTS
-}
-
-enum Ticker {
-    SBER,
-    GAZP,
-    ROSN,
-    BANE,
-    TATN,
-    VTBR
 }

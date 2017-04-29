@@ -1,3 +1,4 @@
+package model;
 
 /**
  * Created by apple on 29.04.17.
@@ -49,7 +50,7 @@ public class Candle {
 
     @Override
     public String toString() {
-        return "Candle{" +
+        return "{" +
                 "date='" + date + '\'' +
                 ", open=" + open +
                 ", high=" + high +
