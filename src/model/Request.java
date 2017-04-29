@@ -25,7 +25,7 @@ import model.Ticker;
  */
 public class Request {
 
-    private String host = "history.alor.ru";
+    private final String host = "history.alor.ru";
     private Board board;
     private Ticker ticker;
     private int period;     // 1, 5, 10, 15, 20, 30, 60, 1440;
