@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.rmi.UnknownHostException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 /**
  * Created by apple on 29.04.17.
@@ -36,8 +35,6 @@ public class Connection {
             out.println(request.getRequest());
 
             receivedData = receive(in);
-//            receiveData(in, new LinkedList<String>());
-//            receiveData(in, receivedData);
 
             System.out.println(CONNECTION_CLOSED);
             socket.close();
@@ -55,10 +52,7 @@ public class Connection {
 
         try{
             System.out.println(RECEIVE_DATA);
-//            while (true){
-//                headerData = in.readLine();
-//                if(!headerData.isEmpty()) break;
-//            }
+
             do{
                 str = in.readLine();
             }while (!str.isEmpty());
@@ -66,12 +60,6 @@ public class Connection {
             str = in.readLine();
             int length = Integer.parseInt(str,16);
             System.out.println("Data length:  hex - " + str+"  dec - "+length);
-
-//            while (true){
-//                candleData = in.readLine();
-//                if(candleData.isEmpty()) break;
-//                    data.add(candleData);
-//            }
 
             do{
                 str = in.readLine();
@@ -84,28 +72,6 @@ public class Connection {
 
         return data;
     }
-
-//    private void receiveData(BufferedReader in, LinkedList<String> data) {
-//        try {
-//            System.out.println(RECEIVE_DATA);
-//
-//            do {
-//                data.add(in.readLine());
-//            } while (!data.getLast().isEmpty());
-//
-//        } catch (Exception e) {
-//            System.out.println(e.toString());
-//        }
-//    }
-//
-//    public String[] getData() {
-//        String[] data = new String[receivedData.size()];
-//
-//        for (int i = 0; i < receivedData.size(); i++) {
-//            data[i] = receivedData.get(i);
-//        }
-//        return data;
-//    }
 
     public String[] getData(){
         return receivedData.toArray(new String[receivedData.size()]);
