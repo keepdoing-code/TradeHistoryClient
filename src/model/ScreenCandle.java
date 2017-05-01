@@ -11,31 +11,15 @@ public class ScreenCandle {
     public int close;
     public int volume;
 
-    public static float multiplier;
-    public static float min;
-    public static int zeroPoint;
-
-    public ScreenCandle(Candle c) {
-        open = calc(c.getOpen());
-        close = calc(c.getClose());
-        high = calc(c.getHigh());
-        low = calc(c.getLow());
-    }
-
-    private int calc(float exp){
-        return (int) ( zeroPoint - (exp - min)* multiplier);
-    }
-
     @Override
     public String toString() {
         return "ScreenCandle{" +
                 "open=" + open +
-                ", high=" + high +
-                ", low=" + low +
-                ", close=" + close +
-                " || multiplier=" + multiplier+
-                " || min="+min+
-                " || zero="+zeroPoint+
+                " | high=" + high +
+                " | low=" + low +
+                " | close=" + close +
+                " | date=" + date +
+                " | volume=" + volume +
                 '}';
     }
 }

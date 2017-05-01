@@ -1,6 +1,5 @@
 package controller;
 
-import model.Candle;
 import model.Request;
 import view.Log;
 
@@ -28,11 +27,11 @@ public class LoadData {
     private static final String RECEIVE_HEADER = "Receive header";
     private static final String DATA_LENGTH = "Data length: ";
     private static final String BYTES = " byte(s)";
+    private static final String STRINGS_RECEIVED = " strings received";
 
-    private static ArrayList<String> dataArray = new ArrayList<String>();
-    private static int dataCounter = 0;
-    private static float max;
-    private static float min;
+    private ArrayList<String> dataArray = new ArrayList<String>();
+    private int dataCounter = 0;
+    private int dataLength = 0;
 
 
     public LoadData(Request request) {
@@ -48,12 +47,14 @@ public class LoadData {
             Log.i(SEND_REQUEST);
             out.println(request.getRequest());
 
-            Integer length = receiveHeader(in);
-            Log.i(DATA_LENGTH + length.toString() + BYTES);
-            dataArray = receiveData(in);
+            receiveHeader(in);
+            receiveData(in);
 
             Log.i(CONNECTION_CLOSED);
             socket.close();
+
+            Log.i(DATA_LENGTH + dataLength + BYTES);
+            Log.i(dataCounter + STRINGS_RECEIVED);
 
         } catch (UnknownHostException e) {
             Log.i(UNKNOWN_HOST);
@@ -62,29 +63,24 @@ public class LoadData {
         }
     }
 
-    private int receiveHeader(BufferedReader in) {
+    private void receiveHeader(BufferedReader in) {
         ArrayList<String> header = new ArrayList<String>();
         String str;
-        int length = 0;
+        Log.i(RECEIVE_HEADER);
 
         try {
-            Log.i(RECEIVE_HEADER);
-
             do {
                 str = in.readLine();
                 header.add(str);
             } while (!str.isEmpty());
 
-            length = Integer.parseInt(in.readLine(), 16);
-
+            dataLength = Integer.parseInt(in.readLine(), 16);
         } catch (Exception e) {
             Log.i(e.toString());
         }
-        return length;
     }
 
-    private ArrayList<String> receiveData(BufferedReader in){
-        ArrayList<String> data = new ArrayList<String>();
+    private void receiveData(BufferedReader in) {
         String str;
 
         try {
@@ -94,45 +90,28 @@ public class LoadData {
                 str = in.readLine();
                 if (!str.isEmpty()) {
                     dataCounter++;
-                    data.add(str);
+                    dataArray.add(str);
                 }
             } while (!str.isEmpty());
 
         } catch (Exception e) {
             Log.i(e.toString());
         }
-
-        return data;
     }
 
-    public Candle[] getCandles() {
-        ArrayList<Candle> candlesArray = new ArrayList<Candle>(100);
-
-        if(!dataArray.isEmpty()) {
-            Candle firstCandle = new Candle(dataArray.get(0));
-            max = firstCandle.getHigh();
-            min = firstCandle.getLow();
-        } else {
-            return null; //TODO throw exception
-        }
-
-
-        for (String s : dataArray) {
-            Candle c = new Candle(s);
-            if(c.getHigh() > max) max = c.getHigh();
-            if(c.getLow() < min) min = c.getLow();
-            candlesArray.add(c);
-        }
-
-        return candlesArray.toArray(new Candle[candlesArray.size()]);
-        //TODO exception handling
+    public ArrayList<String> getDataList() {
+        return dataArray;
     }
 
-    public float getMin() {
-        return min;
+    public String[] getData() {
+        return dataArray.toArray(new String[dataArray.size()]);
     }
 
-    public float getRange(){
-        return max - min;
+    public int getDataLength() {
+        return dataLength;
+    }
+
+    public int getDataCounter() {
+        return dataCounter;
     }
 }

@@ -1,7 +1,6 @@
 package view;
 
-
-import model.Candle;
+import controller.CandlesController;
 import model.ScreenCandle;
 
 import javax.swing.*;
@@ -21,25 +20,28 @@ public class Form extends JFrame {
     private static final Color CANDLE_COLOR = Color.BLACK;
     private static final Color CANDLE_SHADOW_COLOR = Color.blue;
     private static final int CANDLE_WIDTH = 5;
-    private static final int CANDLE_SPACE = 2;
+    private static final int CANDLE_SPACE = 7;
+    private static final String PLUS_SCALE = "+";
+    private static final String MINUS_SCALE = "-";
 
     JPanel panel = new JPanel();
     JPanel panelHistory = new JPanel();
     JButton btnShow = new JButton(SHOW_HISTORY);
     JButton btnExit = new JButton(EXIT);
-    private Graphics g;
-    private Candle[] candles;
-    private ScreenCandle[] scrCandles;
-    private float multiplier;
-    private float min;
+    JButton btnPlusScale = new JButton(PLUS_SCALE);
+    JButton btnMinusScale = new JButton(MINUS_SCALE);
 
-    public Form(Candle[] sc, float range, float min) throws HeadlessException {
+    private int scale = 2;
+    private Graphics graphics;
+    private CandlesController controller;
+    private ScreenCandle[] screenCandles;
 
-        this.candles = sc;
-        this.multiplier = FORM_HEIGHT / range;
-        this.min = min;
-        scrCandles = new ScreenCandle[sc.length];
 
+    public Form(CandlesController candlesController) throws HeadlessException {
+
+        controller = candlesController;
+        controller.convertToScreen(FORM_HEIGHT);
+        screenCandles = controller.getScreenCandles();
 
         setSize(FORM_WIDTH, FORM_HEIGHT);
         setResizable(false);
@@ -48,6 +50,8 @@ public class Form extends JFrame {
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
         panel.add(btnShow);
+        panel.add(btnPlusScale);
+        panel.add(btnMinusScale);
         panel.add(btnExit);
 
         add(panel, BorderLayout.PAGE_END);
@@ -60,6 +64,24 @@ public class Form extends JFrame {
             }
         });
 
+        btnPlusScale.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scale++;
+                Log.i("Scale:"+scale);
+                paintPanel(panelHistory.getGraphics());
+            }
+        });
+
+        btnMinusScale.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scale--;
+                Log.i("Scale:"+scale);
+                paintPanel(panelHistory.getGraphics());
+            }
+        });
+
         btnExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -68,30 +90,21 @@ public class Form extends JFrame {
         });
     }
 
-    private void paintPanel(Graphics graphics) {
-        g = graphics;
-        convertCandles();
-        for (int i = 0; i < scrCandles.length; i++) {
-            drawCandle(scrCandles[i], i * CANDLE_WIDTH + CANDLE_SPACE);
+    private void paintPanel(Graphics g) {
+        graphics = g;
+        graphics.clearRect(0,0,getWidth(),getHeight());
+
+        for (int i = 0; i < screenCandles.length; i++) {
+            drawCandle(screenCandles[i], i * CANDLE_SPACE + 1);
         }
     }
 
-    private void convertCandles() {
-        ScreenCandle.zeroPoint = FORM_HEIGHT;
-        ScreenCandle.multiplier = multiplier;
-        ScreenCandle.min = min;
+    private void drawCandle(ScreenCandle sc, int xOffset) {
 
-        for (int i = 0; i < candles.length; i++) {
-            scrCandles[i] = new ScreenCandle(candles[i]);
-            System.out.println(scrCandles[i].toString());
-        }
-    }
+        graphics.setColor(CANDLE_SHADOW_COLOR);
+        graphics.drawLine(xOffset + 2, sc.high, xOffset + 2, sc.low);
 
-    private void drawCandle(ScreenCandle sc, int x) {
-        g.setColor(CANDLE_SHADOW_COLOR);
-        g.drawLine(x+2,sc.high,x+2,sc.low);
-
-        g.setColor(CANDLE_COLOR);
-        g.drawRect(x,sc.open,CANDLE_WIDTH,sc.close);
+        graphics.setColor(CANDLE_COLOR);
+        graphics.drawRect(xOffset, sc.open, CANDLE_WIDTH, sc.close);
     }
 }
