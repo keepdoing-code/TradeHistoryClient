@@ -28,6 +28,7 @@ public class CandlesController {
             maxPrice = first.high;
             minPrice = first.low;
 
+            //Reverse array
             for (int i = 0; i < rawData.length; i++) {
                 candles[rawData.length - i - 1] = StrToCandle(rawData[i]);
             }
@@ -63,9 +64,6 @@ public class CandlesController {
             screenCandles[i].volume = (int) candles[i].volume;
             screenCandles[i].date = candles[i].date;
         }
-
-//        printCandles();
-//        printScreenCandles();
         return true;
     }
 
