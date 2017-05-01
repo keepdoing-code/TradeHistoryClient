@@ -4,7 +4,7 @@ package model;
  * Created by apple on 01.05.17.
  */
 public class ScreenCandle {
-    public int date;
+    public String date;
     public int open;
     public int high;
     public int low;

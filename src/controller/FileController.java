@@ -14,7 +14,7 @@ public class FileController {
 
     public static void writeDump(String[] data) {
         try {
-            FileWriter writer = new FileWriter(FILE_NAME, true);
+            FileWriter writer = new FileWriter(FILE_NAME, false);
             BufferedWriter bufferWriter = new BufferedWriter(writer);
 
             for (String s : data) {

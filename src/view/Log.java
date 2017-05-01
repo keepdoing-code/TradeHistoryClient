@@ -13,4 +13,8 @@ public class Log {
             System.out.println(s);
         }
     }
+
+    public static void d(int digit){
+        System.out.println(digit);
+    }
 }

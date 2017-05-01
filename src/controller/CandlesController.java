@@ -29,7 +29,7 @@ public class CandlesController {
             minPrice = first.low;
 
             for (int i = 0; i < rawData.length; i++) {
-                candles[i] = StrToCandle(rawData[i]);
+                candles[rawData.length - i - 1] = StrToCandle(rawData[i]);
             }
 
             rangePrice = maxPrice - minPrice;
@@ -49,7 +49,7 @@ public class CandlesController {
     public boolean convertToScreen(int canvasHeight) {
 
         if (candlesCount == 0) return false;
-        this.canvasHeight = canvasHeight / 2;
+        this.canvasHeight = canvasHeight;
         multiplier = canvasHeight / rangePrice;
 
         screenCandles = new ScreenCandle[candles.length];
@@ -61,15 +61,16 @@ public class CandlesController {
             screenCandles[i].low = calcScreen(candles[i].low);
             screenCandles[i].close = calcScreen(candles[i].close);
             screenCandles[i].volume = (int) candles[i].volume;
+            screenCandles[i].date = candles[i].date;
         }
 
-        printCandles();
-        printScreenCandles();
+//        printCandles();
+//        printScreenCandles();
         return true;
     }
 
     private int calcScreen(float exp) {
-        float f = ((exp - minPrice) * multiplier);
+        float f = canvasHeight - ((exp - minPrice) * multiplier);
         int a = Math.round(f);
         return a;
     }
