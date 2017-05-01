@@ -1,6 +1,6 @@
 package view;
 
-import controller.DataLoader;
+import controller.LoadData;
 import model.Board;
 import model.Candle;
 import model.Request;
@@ -16,17 +16,20 @@ public class SimpleView {
     private static final int period = 60;       // 1, 5, 10, 15, 20, 30, 60, 1440;
     private static final String from = "";
     private static final String to = "";
-    private static final int bars = 1000;
+    private static final int bars = 100;
 
-    private static final Request request = new Request(board,ticker,period,from,to,bars);
-    private static final DataLoader loader = new DataLoader(request);
-    private static final Candle[] candles = loader.getCandles();
-
+    private static final Request request = new Request(board, ticker, period, from, to, bars);
 
     public static void run() {
+        final LoadData loader = new LoadData(request);
+        final Candle[] candles = loader.getCandles();
+        final Form form = new Form(candles, loader.getRange(), loader.getMin());
+        form.setVisible(true);
+
         for (Candle c:candles){
             System.out.println(c.toString());
         }
         System.out.println("Array size - "+candles.length);
     }
+
 }

@@ -59,4 +59,32 @@ public class Candle {
                 ", volume=" + volume +
                 '}';
     }
+
+    public float getHigh() {
+        return high;
+    }
+
+    public float getLow() {
+        return low;
+    }
+
+    public float getClose() {
+        return close;
+    }
+
+    public float getOpen() {
+        return open;
+    }
+
+    public float getVolume() {
+        return volume;
+    }
+
+    public String getDate() {
+        return date;
+    }
+    //    public ScreenCandle getScreenCandle(int canvasWidth,int canvasHeight){
+//
+//    }
+
 }

@@ -1,8 +1,5 @@
 package model;
 
-import model.Board;
-import model.Ticker;
-
 /**
  * Created by apple on 29.04.17.
  * В запросе обязаны присутствовать параметры ticker и period, а также хотя бы один
@@ -33,13 +30,6 @@ public class Request {
     private String to;
     private int bars = 0;       //максимальное количество свеч, которое нужно получить (не менее 1 и не более 1000)
 
-    private void PrivateConstructor(Board board, Ticker ticker, int period) {
-        this.board = board;
-        this.ticker = ticker;
-        this.period = period;
-        // TODO check for correctly entered of ticker and period
-    }
-
     public Request(Board board, Ticker ticker, int period, String from) {
         this.PrivateConstructor(board, ticker, period);
         this.from = from;
@@ -58,6 +48,13 @@ public class Request {
     public Request(Board board, Ticker ticker, int period, int bars) {
         this.PrivateConstructor(board, ticker, period);
         this.bars = bars;
+    }
+
+    private void PrivateConstructor(Board board, Ticker ticker, int period) {
+        this.board = board;
+        this.ticker = ticker;
+        this.period = period;
+        // TODO check for correctly entered of ticker and period
     }
 
     public String getRequest() {

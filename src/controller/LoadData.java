@@ -2,6 +2,7 @@ package controller;
 
 import model.Candle;
 import model.Request;
+import view.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 /**
  * Created by apple on 29.04.17.
  */
-public class DataLoader {
+public class LoadData {
 
     private static final String TRYING_CONNECT = "Trying to connect ";
     private static final String CONNECTED = "Connected";
@@ -25,32 +26,39 @@ public class DataLoader {
     private static final String IO_ERROR = "I/O error";
     private static final String RECEIVE_DATA = "Receive data";
     private static final String RECEIVE_HEADER = "Receive header";
+    private static final String DATA_LENGTH = "Data length: ";
+    private static final String BYTES = " byte(s)";
 
-    private ArrayList<String> dataArray = new ArrayList<String>(100);
+    private static ArrayList<String> dataArray = new ArrayList<String>();
+    private static int dataCounter = 0;
+    private static float max;
+    private static float min;
 
-    public DataLoader(Request request) {
+
+    public LoadData(Request request) {
         try {
             String host = request.getHost();
-            log(TRYING_CONNECT + host);
+            Log.i(TRYING_CONNECT + host);
             Socket socket = new Socket(host, 80);
-            log(CONNECTED);
+            Log.i(CONNECTED);
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            log(SEND_REQUEST);
+            Log.i(SEND_REQUEST);
             out.println(request.getRequest());
 
-            receiveHeader(in);
+            Integer length = receiveHeader(in);
+            Log.i(DATA_LENGTH + length.toString() + BYTES);
             dataArray = receiveData(in);
 
-            log(CONNECTION_CLOSED);
+            Log.i(CONNECTION_CLOSED);
             socket.close();
 
         } catch (UnknownHostException e) {
-            log(UNKNOWN_HOST);
+            Log.i(UNKNOWN_HOST);
         } catch (IOException e) {
-            log(IO_ERROR);
+            Log.i(IO_ERROR);
         }
     }
 
@@ -60,7 +68,7 @@ public class DataLoader {
         int length = 0;
 
         try {
-            log(RECEIVE_HEADER);
+            Log.i(RECEIVE_HEADER);
 
             do {
                 str = in.readLine();
@@ -68,10 +76,9 @@ public class DataLoader {
             } while (!str.isEmpty());
 
             length = Integer.parseInt(in.readLine(), 16);
-            header.add("Data length: " + length + " bytes");
 
         } catch (Exception e) {
-            log(e.toString());
+            Log.i(e.toString());
         }
         return length;
     }
@@ -81,66 +88,51 @@ public class DataLoader {
         String str;
 
         try {
-            log(RECEIVE_DATA);
+            Log.i(RECEIVE_DATA);
 
             do {
                 str = in.readLine();
-                if (!str.isEmpty()) data.add(str);
+                if (!str.isEmpty()) {
+                    dataCounter++;
+                    data.add(str);
+                }
             } while (!str.isEmpty());
 
         } catch (Exception e) {
-            log(e.toString());
+            Log.i(e.toString());
         }
 
         return data;
-    }
-
-    private ArrayList<String> receiveAll(BufferedReader in) {
-        ArrayList<String> data = new ArrayList<String>();
-        String str;
-
-        try {
-            log(RECEIVE_DATA);
-
-            do {
-                str = in.readLine();
-                log(str);
-            } while (!str.isEmpty());
-
-            int length = Integer.parseInt(in.readLine(), 16);
-            log("Data length: " + length + " bytes");
-
-
-            //TODO processing many chunks
-            do {
-                str = in.readLine();
-                if (!str.isEmpty()) data.add(str);
-            } while (!str.isEmpty());
-
-        } catch (Exception e) {
-            log(e.toString());
-        }
-
-        return data;
-    }
-
-    public String[] getData() {
-        return dataArray.toArray(new String[dataArray.size()]);
     }
 
     public Candle[] getCandles() {
         ArrayList<Candle> candlesArray = new ArrayList<Candle>(100);
+
+        if(!dataArray.isEmpty()) {
+            Candle firstCandle = new Candle(dataArray.get(0));
+            max = firstCandle.getHigh();
+            min = firstCandle.getLow();
+        } else {
+            return null; //TODO throw exception
+        }
+
+
         for (String s : dataArray) {
-            candlesArray.add(new Candle(s));
+            Candle c = new Candle(s);
+            if(c.getHigh() > max) max = c.getHigh();
+            if(c.getLow() < min) min = c.getLow();
+            candlesArray.add(c);
         }
 
         return candlesArray.toArray(new Candle[candlesArray.size()]);
         //TODO exception handling
     }
 
-    private void log(String msg){
-        System.out.println(msg);
+    public float getMin() {
+        return min;
     }
 
-
+    public float getRange(){
+        return max - min;
+    }
 }
