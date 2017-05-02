@@ -15,12 +15,12 @@ public class Form extends JFrame {
 
     private static final String EXIT = "Exit";
     private static final String SHOW_HISTORY = "Candles";
+    private static final String PLUS_SCALE = "Lines";
+    private static final String MINUS_SCALE = "-";
     private static final int FORM_HEIGHT = 600;
     private static final int FORM_WIDTH = 800;
     private static final int CANDLE_WIDTH = 5;
     private static final int CANDLE_SPACE = 4;
-    private static final String PLUS_SCALE = "Lines";
-    private static final String MINUS_SCALE = "-";
     private static final int LINE_SPACE = 4;
     private static final int PANEL_WIDTH = 0;
     private static final int PANEL_HEIGHT = 100;
@@ -108,7 +108,7 @@ public class Form extends JFrame {
                     xOffset - CANDLE_WIDTH / 2,
                     sc.open,
                     CANDLE_WIDTH,
-                    sc.close-sc.open);
+                    sc.close - sc.open);
         }
     }
 
@@ -164,19 +164,6 @@ public class Form extends JFrame {
             }
         });
 
-        btnMinusScale.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-
-        btnExit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-
+        btnExit.addActionListener(Actions.alButtonExit);
     }
 }

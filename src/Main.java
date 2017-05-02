@@ -7,8 +7,8 @@ import controller.WriteDumpRun;
  */
 public class Main {
     public static void main(String[] args) {
-//        SimpleRun.run();
+        SimpleRun.run();
 //        WriteDumpRun.run();
-        ReadDumpRun.run();
+//        ReadDumpRun.run();
     }
 }
