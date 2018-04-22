@@ -4,12 +4,12 @@ package model;
  * Created by apple on 01.05.17.
  */
 public class ScreenCandle {
-    private String date;
-    private int open;
-    private int high;
-    private int low;
-    private int close;
-    private int volume;
+    public String date;
+    public int open;
+    public int high;
+    public int low;
+    public int close;
+    public int volume;
 
     private static int canvasHeight = 0;
     private static float minPrice = 0;

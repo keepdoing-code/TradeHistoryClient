@@ -10,11 +10,11 @@ import view.Log;
 public class CandlesController {
 
     private static final String EMPTY_RAW_DATA = "E - no data to load in Candles";
-    private float maxPrice;
-    private float minPrice;
+    public float maxPrice;
+    public float minPrice;
     public float rangePrice;
-    private int candlesCount = 0;
-    private float multiplier = 0;
+    public int candlesCount = 0;
+    public float multiplier = 0;
 
     private ScreenCandle[] screenCandles;
     private Candle[] candles;
