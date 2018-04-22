@@ -10,12 +10,11 @@ import view.Log;
 public class CandlesController {
 
     private static final String EMPTY_RAW_DATA = "E - no data to load in Candles";
-    public float maxPrice;
-    public float minPrice;
+    private float maxPrice;
+    private float minPrice;
     public float rangePrice;
-    public int candlesCount = 0;
-    public float multiplier = 0;
-    public int canvasHeight = 0;
+    private int candlesCount = 0;
+    private float multiplier = 0;
 
     private ScreenCandle[] screenCandles;
     private Candle[] candles;
@@ -49,28 +48,17 @@ public class CandlesController {
 
     public boolean convertToScreen(int canvasHeight) {
 
-        if (candlesCount == 0) return false;
-        this.canvasHeight = canvasHeight;
-        multiplier = canvasHeight / rangePrice;
+        if (candlesCount == 0)
+            return false;
 
+        multiplier = canvasHeight / rangePrice;
+        ScreenCandle.Init(canvasHeight,minPrice,multiplier);
         screenCandles = new ScreenCandle[candles.length];
 
         for (int i = 0; i < candlesCount; i++) {
-            screenCandles[i] = new ScreenCandle();
-            screenCandles[i].open = calcScreen(candles[i].open);
-            screenCandles[i].high = calcScreen(candles[i].high);
-            screenCandles[i].low = calcScreen(candles[i].low);
-            screenCandles[i].close = calcScreen(candles[i].close);
-            screenCandles[i].volume = (int) candles[i].volume;
-            screenCandles[i].date = candles[i].date;
+            screenCandles[i] = new ScreenCandle(candles[i]);
         }
         return true;
-    }
-
-    private int calcScreen(float exp) {
-        float f = canvasHeight - ((exp - minPrice) * multiplier);
-        int a = Math.round(f);
-        return a;
     }
 
     public Candle[] getCandles() {
